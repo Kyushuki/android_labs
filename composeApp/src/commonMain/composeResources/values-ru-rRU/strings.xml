@@ -1,0 +1,7 @@
+<resources>
+<string name="app_name">Android labs</string>
+<string name="lab_num">Лабораторная №3</string>
+<string name="lab_name">Ресурсы</string>
+<string name="example">Пример %1$d</string>
+    <string name="addbtn">Название продукта</string>
+</resources>

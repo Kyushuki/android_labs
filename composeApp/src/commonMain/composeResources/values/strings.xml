@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Android labs</string>
+    <string name="lab_num">Lab 3</string>
+    <string name="lab_name">Resources</string>
+    <string name="example">Example %1$d</string>
+    <string name="addbtn">Name</string>
+</resources>

@@ -17,7 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.painterResource
 
 import androidlabs.composeapp.generated.resources.Res
+import androidlabs.composeapp.generated.resources.addbtn
 import androidlabs.composeapp.generated.resources.compose_multiplatform
+import androidlabs.composeapp.generated.resources.example
+import androidlabs.composeapp.generated.resources.lab_name
+import androidlabs.composeapp.generated.resources.lab_num
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -39,6 +43,9 @@ import androidx.compose.ui.semantics.SemanticsActions.OnClick
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import jdk.jfr.Description
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+
 
 
 data class ShoppingListItem (
@@ -76,13 +83,13 @@ fun App() {
                 )
                 Column {
                     Text(
-                        "Лабораторная №2",
+                        stringResource(Res.string.lab_num),
                         style = MaterialTheme.typography.titleSmall,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
                     Text(
-                        "Динамическое изменение отображаемого интерфейса",
+                        stringResource(Res.string.lab_name),
                         style = MaterialTheme.typography.bodySmall,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
@@ -90,26 +97,14 @@ fun App() {
                 }
             }
         }
+        val exampleText1 = stringResource(Res.string.example, 1)
+        val exampleText2 = stringResource(Res.string.example, 2)
+        val exampleText3 = stringResource(Res.string.example, 3)
         val shoppingList = remember {
             mutableStateListOf(
-                ShoppingListItem("Яйца 10"),
-                ShoppingListItem("Молоко 1"),
-                ShoppingListItem("Хлеб 3"),
-                ShoppingListItem("Замороженная пицца 2"),
-                ShoppingListItem("Йогурт 1"),
-                ShoppingListItem("Лапша быстрого приготовления 5"),
-                ShoppingListItem("Колбаса 2"),
-                ShoppingListItem("Грудка 1"),
-                ShoppingListItem("Пирожки 6"),
-                ShoppingListItem("Шампуры 4"),
-                ShoppingListItem("Гамак 2"),
-                ShoppingListItem("Раскладное кресло 4"),
-                ShoppingListItem("Палатка 2"),
-                ShoppingListItem("Вода 5л. 4"),
-                ShoppingListItem("Средство от комаров 4"),
-                ShoppingListItem("Угли 3"),
-                ShoppingListItem("Пластиковая посуда 10"),
-                ShoppingListItem("Швейцарский нож")
+                ShoppingListItem(exampleText1),
+                ShoppingListItem(exampleText2),
+                ShoppingListItem(exampleText3)
             )
         }
         var newItemDesc by remember { mutableStateOf("")}
@@ -118,7 +113,9 @@ fun App() {
                 OutlinedTextField(value = newItemDesc, onValueChange = {newItemDesc = it},
                 modifier = Modifier.padding(8.dp),
                 label = {
-                    Text("Название продукта")
+                    Text(
+                        stringResource(Res.string.addbtn)
+                    )
                 },
                 trailingIcon = {
                     IconButton(onClick = {
