@@ -24,21 +24,45 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.semantics.SemanticsActions.OnClick
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import jdk.jfr.Description
 
+
+data class ShoppingListItem (
+    val description: String,
+    val bought: Boolean = false
+)
+
 @Composable
-fun ShoppingListElement(description: String){
-    Text(description, modifier = Modifier.padding(6.dp))
+fun ShoppingListElement(item: ShoppingListItem, onBoughtChange: (Boolean) -> Unit, onDelete: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(
+            checked = item.bought,
+            onCheckedChange = onBoughtChange
+        )
+        Text(item.description, Modifier.weight(1f))
+        IconButton(onClick = onDelete) {
+            Icon(Icons.Default.Delete, contentDescription = "Удалить")
+        }
+    }
 }
 @Composable
 fun App() {
     Column {
-        Card (
+        Card(
             modifier = Modifier.padding(8.dp)
         ) {
             Row(
@@ -52,13 +76,13 @@ fun App() {
                 )
                 Column {
                     Text(
-                        "Лабораторная №1",
+                        "Лабораторная №2",
                         style = MaterialTheme.typography.titleSmall,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
                     Text(
-                        "Основы разметки Compose",
+                        "Динамическое изменение отображаемого интерфейса",
                         style = MaterialTheme.typography.bodySmall,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
@@ -66,32 +90,60 @@ fun App() {
                 }
             }
         }
-        val shoppingList = remember { listOf(
-            "Яйца 10",
-            "Молоко 1",
-            "Хлеб 3",
-            "Замороженная пицца 2",
-            "Йогурт 1",
-            "Лапша быстрого приготовления 5",
-            "Колбаса 2",
-            "Грудка 1",
-            "Пирожки 6",
-            "Шампуры 4",
-            "Гамак 2",
-            "Раскладное кресло 4",
-            "Палатка 2",
-            "Вода 5л. 4",
-            "Средство от комаров 4",
-            "Угли 3",
-            "Пластиковая посуда 10",
-            "Швейцарский нож"
-        ) }
-        LazyColumn (Modifier.fillMaxWidth()){
-            items(shoppingList) {
-                ShoppingListElement(it)
+        val shoppingList = remember {
+            mutableStateListOf(
+                ShoppingListItem("Яйца 10"),
+                ShoppingListItem("Молоко 1"),
+                ShoppingListItem("Хлеб 3"),
+                ShoppingListItem("Замороженная пицца 2"),
+                ShoppingListItem("Йогурт 1"),
+                ShoppingListItem("Лапша быстрого приготовления 5"),
+                ShoppingListItem("Колбаса 2"),
+                ShoppingListItem("Грудка 1"),
+                ShoppingListItem("Пирожки 6"),
+                ShoppingListItem("Шампуры 4"),
+                ShoppingListItem("Гамак 2"),
+                ShoppingListItem("Раскладное кресло 4"),
+                ShoppingListItem("Палатка 2"),
+                ShoppingListItem("Вода 5л. 4"),
+                ShoppingListItem("Средство от комаров 4"),
+                ShoppingListItem("Угли 3"),
+                ShoppingListItem("Пластиковая посуда 10"),
+                ShoppingListItem("Швейцарский нож")
+            )
+        }
+        var newItemDesc by remember { mutableStateOf("")}
+        LazyColumn(Modifier.fillMaxWidth()) {
+            item {
+                OutlinedTextField(value = newItemDesc, onValueChange = {newItemDesc = it},
+                modifier = Modifier.padding(8.dp),
+                label = {
+                    Text("Название продукта")
+                },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        if (newItemDesc.isNotBlank()) {
+                            shoppingList.add(ShoppingListItem(newItemDesc.trim()))
+                            newItemDesc = ""
+                        }
+                    }) {
+                        Icon(Icons.Default.Add, contentDescription = "Добавить")
+                    }
+                })
+            }
+            itemsIndexed(shoppingList) { i, item ->
+                ShoppingListElement(
+                    item,
+                    onBoughtChange = {
+                        shoppingList[i] = item.copy(bought = it)
+                    },
+                    onDelete = {
+                        shoppingList.removeAt(i)
+                    }
+                )
+
             }
         }
     }
-
 }
 
