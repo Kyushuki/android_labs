@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Лабораторные по Андроиду</string>
-    <string name="lab_num">Лабораторная №5</string>
-    <string name="lab_name">Дизайн</string>
+    <string name="lab_num">Лабораторная №6</string>
+    <string name="lab_name">Навигация</string>
     <string name="example">Пример %1$d</string>
     <string name="addbtn">Название позиции</string>
     <string name="addition">Вы успешно добавили позицию!</string>
@@ -9,4 +9,8 @@
     <string name="cancel">Отменить</string>
     <string name="deleteitem_text">Вы удалите эту позицию</string>
     <string name="deleteitem_title">Подтвердить удаление</string>
+
+    <string name="home_screen_topbar_title">Домашний экран</string>
+    <string name="about_screen_topbar_title">О программе</string>
+    <string name="about_screen_text">Создано в рамках изучения мобильной разработки</string>
 </resources>

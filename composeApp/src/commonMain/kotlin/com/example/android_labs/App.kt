@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.painterResource
 
 import androidlabs.composeapp.generated.resources.Res
+import androidlabs.composeapp.generated.resources.about_screen_topbar_title
 import androidlabs.composeapp.generated.resources.addbtn
 import androidlabs.composeapp.generated.resources.addition
 import androidlabs.composeapp.generated.resources.app_name
@@ -26,6 +27,7 @@ import androidlabs.composeapp.generated.resources.confirm
 import androidlabs.composeapp.generated.resources.deleteitem_text
 import androidlabs.composeapp.generated.resources.deleteitem_title
 import androidlabs.composeapp.generated.resources.example
+import androidlabs.composeapp.generated.resources.home_screen_topbar_title
 import androidlabs.composeapp.generated.resources.lab_name
 import androidlabs.composeapp.generated.resources.lab_num
 import androidx.compose.foundation.layout.Row
@@ -40,6 +42,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -56,169 +60,83 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.semantics.SemanticsActions.OnClick
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.example.android_labs.component.Config
+import com.example.android_labs.component.RootComponent
 import jdk.jfr.Description
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import ui.screen.AboutScreen
+import ui.screen.HomeScreen
 import ui.theme.getApplicationColorScheme
 import ui.utils.adaptive
 
 
-data class ShoppingListItem (
-    val description: String,
-    val bought: Boolean = false
-)
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
+fun App(rootComponent: RootComponent) {
+    MaterialTheme(colorScheme = getApplicationColorScheme()) {
+        val navigationSuiteType = with(currentWindowAdaptiveInfo()) {
+            when {
+                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) ->
+                    NavigationSuiteType.WideNavigationRailExpanded
 
-@Composable
-fun ShoppingListElement(item: ShoppingListItem, onBoughtChange: (Boolean) -> Unit, onDelete: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Checkbox(
-            checked = item.bought,
-            onCheckedChange = onBoughtChange
-        )
-        Text(item.description, Modifier.weight(1f))
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Удалить")
+                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) ->
+                    NavigationSuiteType.WideNavigationRailCollapsed
+
+                else -> NavigationSuiteType.ShortNavigationBarCompact
+            }
         }
-    }
-}
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-fun App() {
-    MaterialTheme (colorScheme = getApplicationColorScheme()) {
-        val snackbarHostState = remember { SnackbarHostState() }
-        val scope = rememberCoroutineScope()
-        var showDialog by remember { mutableStateOf(false)}
-        Scaffold (
-            topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(Res.string.app_name)) }
+
+        val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
+
+        val childStack by rootComponent.childStack.subscribeAsState()
+
+        NavigationSuiteScaffold(
+
+            navigationItems = {
+                NavigationSuiteItem(
+                    selected = childStack.active.configuration == Config.Home,
+                    onClick = { rootComponent.navigate(Config.Home) },
+                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                    label = { Text(stringResource(Res.string.home_screen_topbar_title)) },
+                    navigationSuiteType = navigationSuiteType
+                )
+                NavigationSuiteItem(
+                    selected = childStack.active.configuration == Config.About,
+                    onClick = { rootComponent.navigate(Config.About) },
+                    icon = { Icon(Icons.Default.Info, contentDescription = null) },
+                    label = { Text(stringResource(Res.string.about_screen_topbar_title)) },
+                    navigationSuiteType = navigationSuiteType
                 )
             },
-            snackbarHost = {
-                SnackbarHost(snackbarHostState)
-            }
-        ){ contentPadding ->
-            Column (Modifier.padding((contentPadding))) {
-                Card(
-                    modifier = Modifier.padding(8.dp).adaptive(
-                        currentWindowAdaptiveInfo().windowSizeClass
-                    )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(8.dp).fillMaxWidth()
-                    ) {
-                        Image(
-                            painterResource(Res.drawable.compose_multiplatform),
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp)
-                        )
-                        Column {
-                            Text(
-                                stringResource(Res.string.lab_num),
-                                style = MaterialTheme.typography.titleMedium,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                            Text(
-                                stringResource(Res.string.lab_name),
-                                style = MaterialTheme.typography.bodyMedium,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                        }
-                    }
-                }
-                val exampleText1 = stringResource(Res.string.example, 1)
-                val exampleText2 = stringResource(Res.string.example, 2)
-                val exampleText3 = stringResource(Res.string.example, 3)
-                val shoppingList = rememberSaveable {
-                    mutableStateListOf(
-                        ShoppingListItem(exampleText1),
-                        ShoppingListItem(exampleText2),
-                        ShoppingListItem(exampleText3)
-                    )
-                }
-                var newItemDesc by rememberSaveable { mutableStateOf("")}
-                val addition = stringResource(Res.string.addition)
-                LazyColumn(Modifier.fillMaxWidth()) {
-                    item {
-                        OutlinedTextField(value = newItemDesc, onValueChange = {newItemDesc = it},
-                            modifier = Modifier.padding(8.dp).adaptive(
-                                currentWindowAdaptiveInfo().windowSizeClass
-                            ),
-                            label = {
-                                Text(
-                                    stringResource(Res.string.addbtn)
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = {
-                                    if (newItemDesc.isNotBlank()) {
-                                        shoppingList.add(ShoppingListItem(newItemDesc.trim()))
-                                        newItemDesc = ""
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar(addition, duration = SnackbarDuration.Long, withDismissAction = true)
-                                        }
-                                    }
-                                }) {
-                                    Icon(Icons.Default.Add, contentDescription = "Добавить")
-                                }
-                            })
-                    }
-                    itemsIndexed(shoppingList) { i, item ->
-                        ShoppingListElement(
-                            item,
-                            onBoughtChange = {
-                                shoppingList[i] = item.copy(bought = it)
-                            },
-                            onDelete = {
-                                showDialog = true
-                            }
-                        )
-                        if (showDialog) {
-                            AlertDialog(
-                                onDismissRequest = {
-                                    showDialog = false
-                                },
-                                confirmButton = {
-                                    TextButton(onClick = {
-                                        showDialog = false
-                                        shoppingList.removeAt(i)
-                                    }) {
-                                        Text(stringResource(Res.string.confirm))
-                                    }
-                                },
-                                dismissButton = {
-                                    TextButton(onClick = {
-                                        showDialog = false
-                                    }) {
-                                        Text(stringResource(Res.string.cancel))
-                                    }
-                                },
-                                text = {
-                                    Text(stringResource(Res.string.deleteitem_text))
-                                },
-                                title = {
-                                    Text(stringResource(Res.string.deleteitem_title))
-                                },
-                                icon = {
-                                    Icon(Icons.Default.Warning, contentDescription = null)
-                                }
-                            )
-                        }
-                    }
-                }
 
+            navigationSuiteType = navigationSuiteType,
+
+            state = navigationScaffoldState
+        ) {
+            Children(rootComponent.childStack, animation = stackAnimation(fade())) {
+                when (val child = it.instance) {
+                    is RootComponent.Child.Home -> HomeScreen(child.component)
+                    is RootComponent.Child.About -> AboutScreen(child.component)
+                }
             }
         }
     }
-
 }
 

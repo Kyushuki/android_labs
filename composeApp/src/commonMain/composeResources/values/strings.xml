@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Android labs</string>
-    <string name="lab_num">Lab 5</string>
-    <string name="lab_name">Design</string>
+    <string name="lab_num">Lab 6</string>
+    <string name="lab_name">Navigation</string>
     <string name="example">Example %1$d</string>
     <string name="addbtn">Name</string>
     <string name="addition">You successfully added an item!</string>
@@ -9,4 +9,9 @@
     <string name="cancel">Cancel</string>
     <string name="deleteitem_text">You will delete this item</string>
     <string name="deleteitem_title">Confirm deletion</string>
+
+    <string name="home_screen_topbar_title">Home</string>
+    <string name="about_screen_topbar_title">About</string>
+    <string name="about_screen_text">Created upon android kotlin development course</string>
 </resources>
+
