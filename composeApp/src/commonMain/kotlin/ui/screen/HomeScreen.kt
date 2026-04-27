@@ -10,7 +10,7 @@ import androidlabs.composeapp.generated.resources.confirm
 import androidlabs.composeapp.generated.resources.deleteitem_text
 import androidlabs.composeapp.generated.resources.deleteitem_title
 import androidlabs.composeapp.generated.resources.example
-import androidlabs.composeapp.generated.resources.home_screen_topbar_title
+
 import androidlabs.composeapp.generated.resources.lab_name
 import androidlabs.composeapp.generated.resources.lab_num
 import androidx.compose.foundation.Image
@@ -26,7 +26,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,9 +43,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.currentWindowDpSize
+
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -58,12 +58,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.android_labs.component.HomeComponent
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
+
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.utils.adaptive
-import ui.utils.adaptiveHorizontalPadding
+
 
 data class ShoppingListItem (
     val description: String,
