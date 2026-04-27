@@ -1,7 +1,12 @@
 <resources>
-<string name="app_name">Android labs</string>
-<string name="lab_num">Лабораторная №4</string>
-<string name="lab_name">Системная Тема</string>
-<string name="example">Пример %1$d</string>
-    <string name="addbtn">Название продукта</string>
+    <string name="app_name">Лабораторные по Андроиду</string>
+    <string name="lab_num">Лабораторная №5</string>
+    <string name="lab_name">Дизайн</string>
+    <string name="example">Пример %1$d</string>
+    <string name="addbtn">Название позиции</string>
+    <string name="addition">Вы успешно добавили позицию!</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отменить</string>
+    <string name="deleteitem_text">Вы удалите эту позицию</string>
+    <string name="deleteitem_title">Подтвердить удаление</string>
 </resources>
