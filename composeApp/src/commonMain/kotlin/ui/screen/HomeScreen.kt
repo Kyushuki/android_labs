@@ -4,12 +4,14 @@ import androidlabs.composeapp.generated.resources.Res
 import androidlabs.composeapp.generated.resources.addbtn
 import androidlabs.composeapp.generated.resources.addition
 import androidlabs.composeapp.generated.resources.app_name
+import androidlabs.composeapp.generated.resources.blank_addition
 import androidlabs.composeapp.generated.resources.cancel
 import androidlabs.composeapp.generated.resources.compose_multiplatform
 import androidlabs.composeapp.generated.resources.confirm
 import androidlabs.composeapp.generated.resources.deleteitem_text
 import androidlabs.composeapp.generated.resources.deleteitem_title
 import androidlabs.composeapp.generated.resources.example
+import androidlabs.composeapp.generated.resources.home_screen_topbar_title
 
 import androidlabs.composeapp.generated.resources.lab_name
 import androidlabs.composeapp.generated.resources.lab_num
@@ -60,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import com.example.android_labs.component.HomeComponent
 
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.utils.adaptive
@@ -68,7 +71,7 @@ import ui.utils.adaptive
 data class ShoppingListItem (
     val description: String,
     val bought: Boolean = false
-)
+) : java.io.Serializable
 
 @Composable
 fun ShoppingListElement(item: ShoppingListItem, onBoughtChange: (Boolean) -> Unit, onDelete: () -> Unit) {
@@ -93,7 +96,7 @@ fun HomeScreen(component: HomeComponent) {
         Scaffold (
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(Res.string.app_name)) }
+                    title = { Text(stringResource(Res.string.home_screen_topbar_title)) }
                 )
             },
             snackbarHost = {
@@ -146,6 +149,7 @@ fun HomeScreen(component: HomeComponent) {
 
                 var newItemDesc by rememberSaveable { mutableStateOf("")}
                 val addition = stringResource(Res.string.addition)
+                val blank_addition = stringResource(Res.string.blank_addition)
                 LazyColumn(Modifier.fillMaxWidth()) {
                     item {
                         OutlinedTextField(value = newItemDesc, onValueChange = {newItemDesc = it},
@@ -163,7 +167,11 @@ fun HomeScreen(component: HomeComponent) {
                                         shoppingList.add(ShoppingListItem(newItemDesc.trim()))
                                         newItemDesc = ""
                                         scope.launch {
-                                            snackbarHostState.showSnackbar(addition, duration = SnackbarDuration.Long, withDismissAction = true)
+                                            snackbarHostState.showSnackbar(addition, duration = SnackbarDuration.Short, withDismissAction = true)
+                                        }
+                                    } else {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(blank_addition, duration = SnackbarDuration.Short, withDismissAction = true)
                                         }
                                     }
                                 }) {
@@ -178,13 +186,17 @@ fun HomeScreen(component: HomeComponent) {
                                 shoppingList[i] = item.copy(bought = it)
                             },
                             onDelete = {
-                                showDialog = true
-                                itemToDelete = item
+                                if (item.bought) {
+                                    shoppingList.removeAt(i)
+                                } else {
+                                    showDialog = true
+                                    itemToDelete = item
+                                }
                             }
                         )
                     }
                 }
-                if (showDialog) {
+                if (showDialog ) {
                     AlertDialog(
                         onDismissRequest = {
                             showDialog = false

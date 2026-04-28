@@ -5,6 +5,7 @@
     <string name="example">Пример %1$d</string>
     <string name="addbtn">Название позиции</string>
     <string name="addition">Вы успешно добавили позицию!</string>
+    <string name="blank_addition">Вы пытаетесь добавить пустую позицию, пожалуйста не делайте так!</string>
     <string name="confirm">Подтвердить</string>
     <string name="cancel">Отменить</string>
     <string name="deleteitem_text">Вы удалите эту позицию</string>

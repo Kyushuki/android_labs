@@ -5,6 +5,7 @@
     <string name="example">Example %1$d</string>
     <string name="addbtn">Name</string>
     <string name="addition">You successfully added an item!</string>
+    <string name="blank_addition">You trying to add blank item, please don't do that!</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="deleteitem_text">You will delete this item</string>
